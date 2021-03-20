@@ -12,17 +12,17 @@ from django.contrib.auth.models import User
 #         return self.name
 
 
-class Account(models.Model):
-    '''The account of the user, containing several EntryItem objects'''
-    # user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
-    name = models.CharField(max_length=200, null=True)
-
-    @property
-    def total_spending(self):
-        account_items = self.entryitem_set.all()
-        total = sum([item.amount for item in account_items])
-        return total
+# class Account(models.Model):
+#     '''The account of the user, containing several EntryItem objects'''
+#     # user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+#     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+#     name = models.CharField(max_length=200, null=True)
+#
+#     @property
+#     def total_spending(self):
+#         account_items = self.entryitem_set.all()
+#         total = sum([item.amount for item in account_items])
+#         return total
 
 
 class EntryItem(models.Model):
