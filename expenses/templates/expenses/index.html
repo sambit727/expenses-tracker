@@ -1,0 +1,129 @@
+<!-- To start Live Server, press Ctrl + Alt + 8 -->
+<!-- To stop Live Server, press Ctrl + Alt + Q -->
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <title>Expense Tracker</title>
+  <link rel="icon" href="https://cdn.iconscout.com/icon/premium/png-256-thumb/bar-graph-1896511-1605911.png">
+  <script src='https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js'></script>
+</head>
+<body>
+
+  <div class="page-title">
+    <h2>Expense Tracker</h2>
+  </div>
+
+  <div class="summary-container">
+    <div class="summary-text">
+      <h3>Monthly Summary</h3>
+      <p>Total Spending:<span id=text-right> £{{ total }}</span></p>
+      <p>Daily Average:<span id=text-right> £{{ daily_avg|floatformat:2 }}</span></p>
+      <p>Spending On Track:<span id=text-right> £{{ spendings_track|floatformat:2 }}</span></p>
+      <p>Savings On Track:<span id=text-right> £{{ savings_track|floatformat:2 }}</span></p>
+    </div>
+    <div id="spendings-chart">
+      <canvas id="myChart" width="700" height="300"></canvas>
+
+
+      <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+        const x_label = [1,2,3,4,5,6,7];
+        console.log(x_label);
+        const y_label = [35.60, 35.90, 159.99, 46, 23, 10, 12];
+        console.log(y_label);
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: x_label,
+                datasets: [{
+                    label: false,
+                    data: y_label,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                legend: false,
+                scales: {
+                    yAxes: [{
+                        display: true,
+                        gridLines: {
+                          color: 'gray'
+                        },
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }],
+                    xAxes: [{
+                        display: true,
+                        gridLines: {
+                          color: 'gray'
+                        },
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }],
+
+                }
+            }
+        });
+        Chart.defaults.global.defaultFontColor = '#fff';
+        Chart.defaults.global.defaultFontFamily = 'Arial';
+        Chart.defaults.global.defaultFontSize = 14;
+      </script>
+    </div>
+  </div>
+
+
+
+
+
+  <div class="entry-container">
+    <div class="entry-form-container">
+      <form class="entry-form">
+        <input class='input-date' type="text" name="input-date" placeholder="Date">
+        <input class='input-category' type="text" name="input-category" placeholder="Category">
+        <input class='input-amount' type="text" name="input-amount" placeholder="Amount">
+        <input class='input-balance' type="text" name="input-balance" placeholder="Balance">
+        <input class='submit-form' type="button" name="submit-form" value="Submit" class='form-submit'>
+      </form>
+    </div>
+
+    {% for entry in entries %}
+      <div class="entries">
+        <p>{{entry.date}}</p>
+        <p>{{entry.category}}</p>
+        <p>£{{entry.amount|floatformat:2}}</p>
+        <p>£{{entry.balance|floatformat:2}}</p>
+        <button class="edit-btn">Edit</button>
+        <button class="delete-btn">Delete</button>
+      </div>
+    {% endfor %}
+
+
+  </div>
+
+</body>
+</html>
