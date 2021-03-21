@@ -27,7 +27,7 @@ class Account(models.Model):
 
 class EntryItem(models.Model):
     '''The entry submitted to the Account by a User'''
-    date = models.DateTimeField()
+    date = models.DateField(auto_now_add = True)
     category = models.CharField(max_length=20, null=True)
     amount = models.FloatField()
     balance = models.FloatField()

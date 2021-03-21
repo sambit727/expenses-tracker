@@ -1,36 +1,52 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
+import json
+
 from .models import *
-# Create your views here.
+from .forms import *
 
 def index(request):
     entries = EntryItem.objects.all()
-    account = Account.objects.all()
+    account = Account.objects.first()
 
-    total = 0
-    for entry in entries:
-        total += entry.amount
+    form = EntryForm()
 
-    daily_avg = total / len(entries)
+    if request.method == 'POST':
+        form = EntryForm(request.POST)
+        if form.is_valid():
+            form.save()
+        return redirect('/')
 
-    spendings_track = daily_avg * 30
+    if len(entries) > 0:
+        daily_avg = account.total_spending / len(entries)
+        spendings_track = daily_avg * 30
+        savings_track = 450 - spendings_track
+    else:
+        daily_avg = 0
+        spendings_track = 0
+        savings_track = 450
 
-    savings_track = 450 - spendings_track
-
-    x_labels = [x.pk for x in entries]
+    x_labels = [x.date for x in entries]
 
     y_labels = [y.amount for y in entries]
 
     context = {'entries':entries,
-                'total':total,
+                'account':account,
+                'form':form,
                 'daily_avg':daily_avg,
                 'spendings_track':spendings_track,
                 'savings_track':savings_track,
-                'x_labels':x_labels,
+                'x_labels':json.dumps(x_labels, indent=4, sort_keys=True, default=str),
                 'y_labels':y_labels,}
 
     return render(request, 'expenses/index.html', context)
+
+def deleteEntry(request, pk):
+    entry = EntryItem.objects.get(id=pk)
+    entry.delete()
+    context = {'entry':entry}
+    return redirect('/')
 
 
 #['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange']
