@@ -23,7 +23,7 @@
   <div class="summary-container">
     <div class="summary-text">
       <h3>Monthly Summary</h3>
-      <p>Total Spending:<span id=text-right> £{{ total }}</span></p>
+      <p>Total Spending:<span id=text-right> £{{ account.total_spending }}</span></p>
       <p>Daily Average:<span id=text-right> £{{ daily_avg|floatformat:2 }}</span></p>
       <p>Spending On Track:<span id=text-right> £{{ spendings_track|floatformat:2 }}</span></p>
       <p>Savings On Track:<span id=text-right> £{{ savings_track|floatformat:2 }}</span></p>
@@ -34,9 +34,11 @@
 
       <script>
         var ctx = document.getElementById('myChart').getContext('2d');
-        const x_label = [1,2,3,4,5,6,7];
+        // const x_label = [1,2,3,4,5,6,7];
+        const x_label = {{ x_labels|safe }};
         console.log(x_label);
-        const y_label = [35.60, 35.90, 159.99, 46, 23, 10, 12];
+        // const y_label = [35.60, 35.90, 159.99, 46, 23];
+        const y_label = {{ y_labels|safe }}
         console.log(y_label);
         var myChart = new Chart(ctx, {
             type: 'line',
@@ -97,17 +99,18 @@
   </div>
 
 
-
-
-
   <div class="entry-container">
     <div class="entry-form-container">
-      <form class="entry-form">
-        <input class='input-date' type="text" name="input-date" placeholder="Date">
+      <form class="entry-form" action="/" method="POST">
+        {% csrf_token %}
+        {{ form.category }}
+        {{ form.amount }}
+        {{ form.balance }}
+        <!-- <input class='input-date' type="text" name="input-date" placeholder="Date">
         <input class='input-category' type="text" name="input-category" placeholder="Category">
         <input class='input-amount' type="text" name="input-amount" placeholder="Amount">
-        <input class='input-balance' type="text" name="input-balance" placeholder="Balance">
-        <input class='submit-form' type="button" name="submit-form" value="Submit" class='form-submit'>
+        <input class='input-balance' type="text" name="input-balance" placeholder="Balance"> -->
+        <input class='submit-form' type="submit" name="submit-form" value="Submit">
       </form>
     </div>
 
@@ -117,8 +120,9 @@
         <p>{{entry.category}}</p>
         <p>£{{entry.amount|floatformat:2}}</p>
         <p>£{{entry.balance|floatformat:2}}</p>
-        <button class="edit-btn">Edit</button>
-        <button class="delete-btn">Delete</button>
+        <a class="edit-btn">Edit</a>
+        <a class="delete-btn" href="{% url 'delete' entry.id %}">Delete</a>
+        <!-- </div> -->
       </div>
     {% endfor %}
 
