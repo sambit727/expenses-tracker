@@ -11,5 +11,5 @@ class EntryForm(forms.ModelForm):
 
     class Meta:
         model = EntryItem
-        fields = ('category', 'amount', 'balance', 'entry')
+        fields = ('category', 'amount', 'balance', 'account')
         # fields = '__all__'

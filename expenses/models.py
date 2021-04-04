@@ -21,6 +21,7 @@ class Account(models.Model):
     @property
     def total_spending(self):
         account_items = self.entryitem_set.all()
+        # print(account_items)
         total = sum([item.amount for item in account_items])
         return total
 
@@ -31,7 +32,7 @@ class EntryItem(models.Model):
     category = models.CharField(max_length=20, null=True)
     amount = models.FloatField()
     balance = models.FloatField()
-    entry = models.ForeignKey(Account, on_delete=models.SET_NULL, blank=True, null=True)
+    account = models.ForeignKey(Account, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return (self.category + ': £' + str(self.amount))

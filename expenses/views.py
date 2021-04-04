@@ -7,8 +7,14 @@ from .models import *
 from .forms import *
 
 def index(request):
-    entries = EntryItem.objects.all()
+
     account = Account.objects.first()
+    entries = EntryItem.objects.all()
+
+    # test = account.entryitem_set.all()
+    # print(test)
+
+    total = sum([item.amount for item in entries])
 
     form = EntryForm()
 
@@ -19,7 +25,9 @@ def index(request):
         return redirect('/')
 
     if len(entries) > 0:
-        daily_avg = account.total_spending / len(entries)
+        # daily_avg = account.total_spending / len(entries)
+        daily_avg = total / len(entries)
+
         spendings_track = daily_avg * 30
         savings_track = 450 - spendings_track
     else:
