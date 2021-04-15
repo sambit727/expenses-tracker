@@ -5,11 +5,10 @@ from .models import *
 
 
 class EntryForm(forms.ModelForm):
-    category = forms.CharField(widget= forms.TextInput(attrs={'placeholder':'Category'}))
-    amount = forms.CharField(widget= forms.TextInput(attrs={'placeholder':'Amount'}))
-    balance = forms.CharField(widget= forms.TextInput(attrs={'placeholder':'Balance'}))
+    category = forms.CharField(widget= forms.TextInput(attrs={'placeholder':'Category','id':'id_category'}))
+    amount = forms.CharField(widget= forms.TextInput(attrs={'placeholder':'Amount', 'id':'id_amount'}))
 
     class Meta:
         model = EntryItem
-        fields = ('category', 'amount', 'balance', 'account')
+        fields = ('category', 'amount', 'account')
         # fields = '__all__'

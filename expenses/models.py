@@ -31,7 +31,7 @@ class EntryItem(models.Model):
     date = models.DateField(auto_now_add = True)
     category = models.CharField(max_length=20, null=True)
     amount = models.FloatField()
-    balance = models.FloatField()
+    # balance = models.FloatField()
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):

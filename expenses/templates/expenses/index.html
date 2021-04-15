@@ -13,6 +13,9 @@
   <title>Expense Tracker</title>
   <link rel="icon" href="https://cdn.iconscout.com/icon/premium/png-256-thumb/bar-graph-1896511-1605911.png">
   <script src='https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js'></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  
+
 </head>
 <body>
 
@@ -31,69 +34,13 @@
     <div id="spendings-chart">
       <canvas id="myChart" width="700" height="300"></canvas>
 
-
       <script>
-        var ctx = document.getElementById('myChart').getContext('2d');
         // const x_label = [1,2,3,4,5,6,7];
         const x_label = {{ x_labels|safe }};
         console.log(x_label);
         // const y_label = [35.60, 35.90, 159.99, 46, 23];
         const y_label = {{ y_labels|safe }}
         console.log(y_label);
-        var myChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: x_label,
-                datasets: [{
-                    label: false,
-                    data: y_label,
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                legend: false,
-                scales: {
-                    yAxes: [{
-                        display: true,
-                        gridLines: {
-                          color: 'gray'
-                        },
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }],
-                    xAxes: [{
-                        display: true,
-                        gridLines: {
-                          color: 'gray'
-                        },
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }],
-
-                }
-            }
-        });
-        Chart.defaults.global.defaultFontColor = '#fff';
-        Chart.defaults.global.defaultFontFamily = 'Arial';
-        Chart.defaults.global.defaultFontSize = 14;
       </script>
     </div>
   </div>
@@ -101,16 +48,12 @@
 
   <div class="entry-container">
     <div class="entry-form-container">
-      <form class="entry-form" action="/" method="POST">
+      <form class="entry-form" method="POST">
         {% csrf_token %}
         {{ form.category }}
         {{ form.amount }}
-        {{ form.balance }}
-        <!-- <input class='input-date' type="text" name="input-date" placeholder="Date">
-        <input class='input-category' type="text" name="input-category" placeholder="Category">
-        <input class='input-amount' type="text" name="input-amount" placeholder="Amount">
-        <input class='input-balance' type="text" name="input-balance" placeholder="Balance"> -->
-        <input class='submit-form' type="submit" name="submit-form" value="Submit">
+        {% comment %} {{ form.balance }} {% endcomment %}
+        <input class='submit-form' id='submit-entry-btn'type="submit" name="submit-form" value="Submit">
       </form>
     </div>
 
@@ -119,7 +62,7 @@
         <p>{{entry.date}}</p>
         <p>{{entry.category}}</p>
         <p>£{{entry.amount|floatformat:2}}</p>
-        <p>£{{entry.balance|floatformat:2}}</p>
+        {% comment %} <p>£{{entry.balance|floatformat:2}}</p> {% endcomment %}
         <a class="edit-btn">Edit</a>
         <a class="delete-btn" href="{% url 'delete' entry.id %}">Delete</a>
         <!-- </div> -->
@@ -129,5 +72,6 @@
 
   </div>
 
+<script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>

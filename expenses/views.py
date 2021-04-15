@@ -1,5 +1,9 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from .serializers import CreateEntrySerializer
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 import json
 
@@ -10,7 +14,7 @@ def index(request):
 
     account = Account.objects.first()
     entries = EntryItem.objects.all()
-
+    last_entry = EntryItem.objects.latest('date')
     # test = account.entryitem_set.all()
     # print(test)
 
@@ -56,5 +60,17 @@ def deleteEntry(request, pk):
     context = {'entry':entry}
     return redirect('/')
 
-
-#['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange']
+class CreateEntryView(APIView):
+    authentication_classes = (TokenAuthentication,)
+    serializer_class = CreateEntrySerializer
+    
+    def post(self, request, format=None):    
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            category = serializer.data.get('category')
+            amount = serializer.data.get('amount')
+            entry = EntryItem(category=category, amount=amount)
+            entry.save()
+            return Response(EntryItemSerializer(entry).data, status=status.HTTP_201_CREATED)
+        
+        return Response({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)
