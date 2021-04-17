@@ -31,24 +31,16 @@
       <p>Spending On Track:<span id=text-right> £{{ spendings_track|floatformat:2 }}</span></p>
       <p>Savings On Track:<span id=text-right> £{{ savings_track|floatformat:2 }}</span></p>
     </div>
+    
     <div id="spendings-chart">
       <canvas id="myChart" width="700" height="300"></canvas>
-
-      <script>
-        // const x_label = [1,2,3,4,5,6,7];
-        const x_label = {{ x_labels|safe }};
-        console.log(x_label);
-        // const y_label = [35.60, 35.90, 159.99, 46, 23];
-        const y_label = {{ y_labels|safe }}
-        console.log(y_label);
-      </script>
     </div>
   </div>
 
 
   <div class="entry-container">
     <div class="entry-form-container">
-      <form class="entry-form" method="POST">
+      <form class="entry-form" id="entry-form" method="POST">
         {% csrf_token %}
         {{ form.category }}
         {{ form.amount }}
@@ -57,18 +49,19 @@
       </form>
     </div>
 
-    {% for entry in entries %}
-      <div class="entries">
-        <p>{{entry.date}}</p>
-        <p>{{entry.category}}</p>
-        <p>£{{entry.amount|floatformat:2}}</p>
-        {% comment %} <p>£{{entry.balance|floatformat:2}}</p> {% endcomment %}
-        <a class="edit-btn">Edit</a>
-        <a class="delete-btn" href="{% url 'delete' entry.id %}">Delete</a>
-        <!-- </div> -->
-      </div>
-    {% endfor %}
-
+    <div id="entry-wrapper">
+    
+      {% comment %} {% for entry in entries %}
+        <div class="entries">
+          <p>{{entry.date}}</p>
+          <p>{{entry.category}}</p>
+          <p>£{{entry.amount|floatformat:2}}</p>
+          <a class="edit-btn">Edit</a>
+          <a class="delete-btn" href="{% url 'delete' entry.id %}">Delete</a>
+        </div>
+      {% endfor %} {% endcomment %}
+      
+    </div>
 
   </div>
 

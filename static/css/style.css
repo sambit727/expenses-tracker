@@ -44,7 +44,8 @@ body {
 }
 
 #spendings-chart {
-  padding-top: 30px;
+  padding-top: 10px;
+  padding-left: 30px;
 }
 
 .entry-container {
@@ -58,6 +59,25 @@ body {
   margin-top: 15px;
   text-align: left;
   /* border: 2px solid green; */
+}
+
+#entry-wrapper {
+  height: 55vh;
+  background-color: #363636;
+  overflow: scroll;
+  scrollbar-color: #363636;
+  scrollbar-track-color: #363636;
+}
+
+#entry-wrapper::-webkit-scrollbar {
+  width: 8px;
+  scrollbar-color: #363636;
+  scrollbar-track-color: #363636;
+}
+
+#entry-wrapper::-webkit-scrollbar-track {
+  scrollbar-color: #363636;
+  scrollbar-track-color: #363636;
 }
 
 .entry-form-container {

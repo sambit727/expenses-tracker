@@ -1,14 +1,21 @@
+import json
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .serializers import CreateEntrySerializer
+from django.views.decorators.csrf import csrf_protect
+
+from rest_framework import generics, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
-import json
+from .serializers import EntrySerializer
+from .serializers import CreateEntrySerializer
 
 from .models import *
 from .forms import *
+
 
 def index(request):
 
@@ -54,11 +61,32 @@ def index(request):
 
     return render(request, 'expenses/index.html', context)
 
+
+@api_view(['GET'])
+def entryList(request):
+    entries = EntryItem.objects.all().order_by('-id')
+    serializer = EntrySerializer(entries, many=True)
+    
+    return Response(serializer.data)
+
+
+@api_view(['DELETE'])
 def deleteEntry(request, pk):
     entry = EntryItem.objects.get(id=pk)
     entry.delete()
-    context = {'entry':entry}
-    return redirect('/')
+    return Response('Entry Successfully Deleted')
+
+
+@api_view(['POST'])
+def editEntry(request, pk):
+	entry = EntryItem.objects.get(id=pk)
+	serializer = EntrySerializer(instance=entry, data=request.data)
+
+	if serializer.is_valid():
+		serializer.save()
+
+	return Response(serializer.data)
+
 
 class CreateEntryView(APIView):
     authentication_classes = (TokenAuthentication,)
@@ -71,6 +99,7 @@ class CreateEntryView(APIView):
             amount = serializer.data.get('amount')
             entry = EntryItem(category=category, amount=amount)
             entry.save()
-            return Response(EntryItemSerializer(entry).data, status=status.HTTP_201_CREATED)
+            return Response(CreateEntrySerializer(entry).data, status=status.HTTP_201_CREATED)
+        
         
         return Response({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)
