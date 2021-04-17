@@ -29,11 +29,11 @@ def index(request):
 
     form = EntryForm()
 
-    if request.method == 'POST':
-        form = EntryForm(request.POST)
-        if form.is_valid():
-            form.save()
-        return redirect('/')
+    # if request.method == 'POST':
+    #     form = EntryForm(request.POST)
+    #     if form.is_valid():
+    #         form.save()
+    #     return redirect('/')
 
     if len(entries) > 0:
         # daily_avg = account.total_spending / len(entries)

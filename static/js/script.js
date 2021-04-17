@@ -67,11 +67,13 @@ function buildGraph(xLabelArray, yLabelArray){
 }
 
 var activeItem = null
+var list_snapshot = []
+
 buildList()
 
 function buildList() {
     var wrapper = document.getElementById('entry-wrapper');
-    wrapper.innerHTML = ''
+    //wrapper.innerHTML = ''
 
     var url = 'http://127.0.0.1:8000/entry-list/'
 
@@ -99,8 +101,14 @@ function buildList() {
 
         for (var i in list){
 
+            try{
+                document.getElementById(`data-row-${i}`).remove()
+            }catch(err){
+
+            }
+
             var item = `
-                <div class="entries">
+                <div id="data-row-${i}" class="entries">
                     <p>${list[i].date}</p>
                     <p>${list[i].category}</p>
                     <p>£ ${list[i].amount.toFixed(2)}</p>
@@ -112,6 +120,14 @@ function buildList() {
 
         }
         console.log('Successfully loaded all entries')
+
+        if (list_snapshot.length > list.length){
+            for (var i = list.length; i < list_snapshot.length; i++){
+                document.getElementById(`data-row-${i}`).remove()
+            }
+        }
+
+        list_snapshot = list
 
         for (var i in list){
             var editBtn = document.getElementsByClassName('edit-btn')[i];
@@ -189,7 +205,7 @@ function submitEntryForm(){
             .then((response) => {
                 response.json()
                 buildList()
-                // buildGraph()
+                document.getElementById('entry-form').reset()
             })
             .then(data => {
                 console.log('Success:', data);
