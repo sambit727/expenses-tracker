@@ -1,8 +1,13 @@
 import json
+from validate_email import validate_email
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_protect
+from django.views.generic.base import TemplateView
+from django.contrib.auth.models import User
+from django.contrib import messages
 
 from rest_framework import generics, status
 from rest_framework.authentication import TokenAuthentication
@@ -17,8 +22,9 @@ from .models import *
 from .forms import *
 
 
-def index(request):
 
+
+def index(request):
     account = Account.objects.first()
     entries = EntryItem.objects.all()
     last_entry = EntryItem.objects.latest('date')
@@ -103,3 +109,82 @@ class CreateEntryView(APIView):
         
         
         return Response({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+# class RegisterView(TemplateView):
+#     def get(self, request):
+#         return HttpResponse(request, 'expenses/register.html', status=200)
+    
+#     def post(self, request):
+#         return messages.success(request, 'Successfully created an account!')
+
+
+def register(request):
+    if request.method =='GET':
+        return render(request, 'expenses/register.html')   
+     
+    if request.method =='POST':
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        
+        context = {
+            'fieldValues':request.POST
+        }
+        
+        if not User.objects.filter(username=username).exists():
+            if not User.objects.filter(email=email).exists():
+                if len(password) < 6:
+                    messages.error(request, 'Password too short')
+                    return render(request, 'expenses/register.html', context=context) 
+                
+                user = User.objects.create_user(username=username, email=email)
+                user.set_password(password)
+                user.save()
+                messages.success(request, 'Account successfully created!')
+                return render(request, 'expenses/register.html')  
+        
+        return render(request, 'expenses/register.html')    
+        
+        
+
+class UsernameValidationView(APIView):
+    def post(self, request):
+        data = json.loads(request.body)
+        username = data['username']
+        if not str(username).isalnum():
+            return JsonResponse({'username_error': 'username should be alphanumeric'}, status=400)
+        if User.objects.filter(username=username).exists():
+            return JsonResponse({'username_error': 'username is already taken'})
+
+        return JsonResponse({'username_valid': True})
+    
+    
+class EmailValidationView(APIView):
+    def post(self, request):
+        data = json.loads(request.body)
+        email = data['email']
+        if not validate_email(email):
+            return JsonResponse({'email_error': 'Email is invalid'})
+        if User.objects.filter(email=email).exists():
+            return JsonResponse({'email_error': 'Email is already taken'})
+
+        return JsonResponse({'email_valid': True})
+    
+    
+class PasswordValidationView(APIView):
+    def post(self, request):
+        data = json.loads(request.body)
+        password = data['password']
+        
+        if len(password) < 6:
+            return JsonResponse({'password_error': 'Password is too short'})
+        else:
+            return JsonResponse({'password_valid': True})
+
+        
+
+        
+        
+    

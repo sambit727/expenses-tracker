@@ -50,16 +50,6 @@
     </div>
 
     <div id="entry-wrapper">
-    
-      {% comment %} {% for entry in entries %}
-        <div class="entries">
-          <p>{{entry.date}}</p>
-          <p>{{entry.category}}</p>
-          <p>£{{entry.amount|floatformat:2}}</p>
-          <a class="edit-btn">Edit</a>
-          <a class="delete-btn" href="{% url 'delete' entry.id %}">Delete</a>
-        </div>
-      {% endfor %} {% endcomment %}
       
     </div>
 
